@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+# The --reload option restarts the server when files are changed,
+# but it does not refresh the browser.
+# "main" here refers to the file main.py.
+# "app" here refers to the variable app in main.py.
+# The default port is 8000.
+uvicorn main:app --port 3000 --reload

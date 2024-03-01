@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>htmx Demo</title>
+    <link
+      rel="stylesheet"
+      href="{{url_for('static', path='css/styles.css')}}"
+    />
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  </head>
+  <body>
+    <h1>Dogs</h1>
+    <div hx-trigger="revealed, selection-change from:body" hx-get="/form"></div>
+    <table hx-get="/rows" hx-target="tbody" hx-trigger="revealed">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Breed</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </body>
+</html>
