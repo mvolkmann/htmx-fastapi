@@ -88,16 +88,14 @@ def create(
 @app.put('/dog/{id}', response_class=HTMLResponse)
 def update(
     request: Request,
+    id,
     name: Annotated[str, Form()],
-    breed: Annotated[str, Form()],
-    id
+    breed: Annotated[str, Form()]
 ):
     updatedDog = {'id': id, 'name': name, 'breed': breed};
 
-    global dog_map
+    global dog_map, selected_id
     dog_map[id] = updatedDog;
-
-    global selected_id
     selected_id = '';
 
     res = templates.TemplateResponse(
