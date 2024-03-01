@@ -5,10 +5,6 @@ from fastapi.templating import Jinja2Templates
 from typing import Annotated
 import uuid
 
-app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
-
 dog_map = {}
 selected_id = '';
 
@@ -21,15 +17,17 @@ def add_dog(name, breed):
 add_dog('Comet', 'Whippet')
 add_dog('Oscar', 'German Shorthaired Pointer')
 
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
 @app.get('/')
 def index():
     return RedirectResponse(url='/dogs')
 
 @app.get('/dogs', response_class=HTMLResponse)
 def all_dogs(request: Request):
-    return templates.TemplateResponse(
-        request=request, name="dogs.html", context={"dogs": dog_map.values()}
-    )
+    return templates.TemplateResponse(request=request, name="dogs.html")
 
 @app.get('/dogs/{id}')
 def one_dog(id):
