@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Form, Request, Response
+from fastapi import FastAPI, Form, Request, Response, status
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -27,7 +27,7 @@ def index():
 
 @app.get('/dogs', response_class=HTMLResponse)
 def all_dogs(request: Request):
-    return templates.TemplateResponse(request=request, name="dogs.html")
+    return templates.TemplateResponse(request, name="dogs.html")
 
 @app.get('/dogs/{id}')
 def one_dog(id):
@@ -52,7 +52,7 @@ def deselect(response: Response):
 def form(request: Request):
     dog = dog_map.get(selected_id)
     return templates.TemplateResponse(
-        request=request, name="form.html", context={'dog': dog}
+        request, name="form.html", context={'dog': dog}
     )
 
 # Gets table rows for all the dogs.
@@ -60,7 +60,7 @@ def form(request: Request):
 def rows(request: Request):
     sorted_dogs = sorted(dog_map.values(), key=lambda x: x['name'])
     return templates.TemplateResponse(
-        request=request, name="dog-rows.html", context={"dogs": sorted_dogs}
+        request, name="dog-rows.html", context={"dogs": sorted_dogs}
     )
 
 # Selects a dog.
@@ -78,9 +78,11 @@ def create(
     breed: Annotated[str, Form()]
 ):
     new_dog = add_dog(name, breed);
-    return templates.TemplateResponse(
-        request=request, status=201, name="dog-row.html", context={"dog": new_dog}
+    res = templates.TemplateResponse(
+        request, name="dog-row.html", context={"dog": new_dog}
     )
+    res.status_code = status.HTTP_201_CREATED
+    return res
 
 # Updates a dog
 @app.put('/dog/{id}', response_class=HTMLResponse)
@@ -99,7 +101,7 @@ def update(
     selected_id = '';
 
     res = templates.TemplateResponse(
-        request=request, name="dog-row.html", context={"dog": updatedDog, "swap": True}
+        request, name="dog-row.html", context={"dog": updatedDog, "swap": True}
     )
     res.headers['HX-Trigger'] = 'selection-change'
     return res
