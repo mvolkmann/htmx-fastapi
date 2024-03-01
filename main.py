@@ -25,9 +25,8 @@ add_dog('Oscar', 'German Shorthaired Pointer')
 def index():
     return RedirectResponse(url='/dogs')
 
-# TODO: Is "async" needed here?
 @app.get('/dogs', response_class=HTMLResponse)
-async def all_dogs(request: Request):
+def all_dogs(request: Request):
     return templates.TemplateResponse(
         request=request, name="dogs.html", context={"dogs": dog_map.values()}
     )
@@ -89,7 +88,6 @@ def create(
 @app.put('/dog/{id}', response_class=HTMLResponse)
 def update(
     request: Request,
-    response: Response,
     name: Annotated[str, Form()],
     breed: Annotated[str, Form()],
     id
@@ -102,8 +100,8 @@ def update(
     global selected_id
     selected_id = '';
 
-    response.headers['HX-Trigger'] = 'selection-change'
-    return templates.TemplateResponse(
+    res = templates.TemplateResponse(
         request=request, name="dog-row.html", context={"dog": updatedDog, "swap": True}
     )
+    res.headers['HX-Trigger'] = 'selection-change'
     return res
